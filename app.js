@@ -4,10 +4,15 @@ const morgan = require("morgan")
 const bodyParser = require("body-parser")
 const mongoose = require("mongoose")
 
+const logger = require('./api/middlewares/logger')
+
 const smartphonesRoutes = require("./api/routes/smartphones")
+const osRoutes = require("./api/routes/os")
+
+const db_url = `mongodb+srv://${process.env.MONGO_ATLAS_UN}:${process.env.MONGO_ATLAS_PW}@smartphones-ldyxu.mongodb.net/test?retryWrites=true&w=majority`
 
 mongoose.connect(
-    `mongodb+srv://${process.env.MONGO_ATLAS_UN}:${process.env.MONGO_ATLAS_PW}@smartphones-ldyxu.mongodb.net/test?retryWrites=true&w=majority`, 
+    db_url, 
     {useNewUrlParser: true, useUnifiedTopology: true}
   )
   .then(() => console.log('conneted to bd'))
@@ -16,6 +21,8 @@ mongoose.connect(
   })
 
 app.use(morgan("dev"))
+app.use(logger)
+
 app.use(bodyParser.urlencoded({
   extended: false
 }))
@@ -35,6 +42,7 @@ app.use((req, res, next) => {
 })
 
 app.use("/smartphones", smartphonesRoutes)
+app.use("/os", osRoutes)
 
 app.use((req, res, next) => {
   const error = new Error("Not found")

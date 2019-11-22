@@ -26,7 +26,12 @@ router.post("/", async (req, res) => {
   try {
     const phone = new Smartphone({
       _id: new mongoose.Types.ObjectId(),
+      vendor_id: req.body.vendor_id,
       name: req.body.name,
+      os_id: req.body.os_id,
+      memory: req.body.memory,
+      display_size: req.body.display_size,
+      battery: req.body.battery,
       price: req.body.price
     })
     const savedPhone = await phone.save()
