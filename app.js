@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express")
 const app = express()
 const morgan = require("morgan")
@@ -5,23 +6,13 @@ const bodyParser = require("body-parser")
 const mongoose = require("mongoose")
 
 const logger = require('./api/middlewares/logger')
-
 const smartphonesRoutes = require("./api/routes/smartphones")
 const osRoutes = require("./api/routes/os")
 
-const db_url = `mongodb+srv://${process.env.MONGO_ATLAS_UN}:${process.env.MONGO_ATLAS_PW}@smartphones-ldyxu.mongodb.net/test?retryWrites=true&w=majority`
-
-mongoose.connect(
-    db_url, 
-    {useNewUrlParser: true, useUnifiedTopology: true}
-  )
-  .then(() => console.log('conneted to bd'))
-  .catch(err => {
-    console.log(err)
-  })
+require('./api/db/db')
 
 app.use(morgan("dev"))
-app.use(logger)
+// app.use(logger)
 
 app.use(bodyParser.urlencoded({
   extended: false

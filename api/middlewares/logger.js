@@ -1,21 +1,23 @@
 const express = require('express')
 const mongoose = require("mongoose")
 
-const logger = async (req, res, next) => {
+const logSchema = require('../models/log')
+
+const logger = async (method, url, status, message, createdAt, userAgent, data) => {
     try {
-        const result = {
-            request: req.url, 
-            method: req.method, 
-            status: res.statusCode, 
-            createdAt: Date.now()
-        }
-        console.log(`result ${result}`)
-        next()
+        const log = new logSchema({
+            method: method,
+            url: url,
+            status: status,
+            message: message,
+            createdAt: createdAt,
+            userAgent: userAgent,
+            data: data
+        })
+        console.log('log', log)
+        await log.save()
     } catch (err) {
         console.log(err)
-        res.status(500).json({
-            error: err
-        })
     }
 }
 
