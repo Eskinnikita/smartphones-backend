@@ -2,7 +2,6 @@ const express = require('express')
 const mongoose = require('mongoose')
 const router = express.Router()
 
-const logger = require('../middlewares/logger')
 const Os = require('../models/os')
 
 router.get('/', async (req, res) => {
@@ -93,17 +92,14 @@ router.patch("/:osId", async (req, res) => {
       $set: updateOps
     })
     if (updatedOs) {
-      logger(req.method, req.url, 200, 'OK', Date(Date.now()), req.get('User-Agent'), updatedOs)
       res.status(200).json(updatedOs);
     } else {
-      logger(req.method, req.url, 404, 'No valid entry found for provided ID', Date(Date.now()), req.get('User-Agent'))
       res.status(404).json({
         message: "No valid entry found for provided ID"
       });
     }
   } catch (err) {
     console.log(err);
-    logger(req.method, req.url, 500, err, Date(Date.now()), req.get('User-Agent'))
     res.status(500).json({
       error: err
     })

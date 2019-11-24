@@ -1,7 +1,6 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const router = express.Router()
-const logger = require('../middlewares/logger')
 
 const Smartphone = require("../models/smartphone")
 
