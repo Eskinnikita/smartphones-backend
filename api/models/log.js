@@ -2,12 +2,12 @@ const mongoose = require('mongoose')
 
 const logSchema = mongoose.Schema({
     method: String,
-    url: String,
-    status: Number,
-    message: String,
-    createdAt: Date,
+    uri: String,
+    time: String,
+    sourceIP: String,
     userAgent: String,
-    data: Array
+    requestData: Array,
+    responseData: Array
 })
 
 module.exports = mongoose.model('log', logSchema)

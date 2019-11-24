@@ -12,7 +12,8 @@ const osRoutes = require("./api/routes/os")
 require('./api/db/db')
 
 app.use(morgan("dev"))
-// app.use(logger)
+
+app.use(logger)
 
 app.use(bodyParser.urlencoded({
   extended: false
@@ -34,6 +35,7 @@ app.use((req, res, next) => {
 
 app.use("/smartphones", smartphonesRoutes)
 app.use("/os", osRoutes)
+
 
 app.use((req, res, next) => {
   const error = new Error("Not found")
