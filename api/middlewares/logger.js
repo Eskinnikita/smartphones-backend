@@ -20,7 +20,6 @@ const logger = async (req, res, next) => {
                 chunks.push(Buffer.from(restArgs[0]))
             }
             const body = Buffer.concat(chunks).toString('utf8')
-
             const log = new logSchema({
                 method: req.method,
                 uri: req.originalUrl,

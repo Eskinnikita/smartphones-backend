@@ -8,6 +8,7 @@ const mongoose = require("mongoose")
 const logger = require('./api/middlewares/logger')
 const smartphonesRoutes = require("./api/routes/smartphones")
 const osRoutes = require("./api/routes/os")
+const vendorsRoutes = require("./api/routes/vendors")
 
 require('./api/db/db')
 
@@ -35,6 +36,7 @@ app.use((req, res, next) => {
 
 app.use("/smartphones", smartphonesRoutes)
 app.use("/os", osRoutes)
+app.use("/vendors", vendorsRoutes)
 
 
 app.use((req, res, next) => {

@@ -91,6 +91,7 @@ router.patch("/:phoneId", async (req, res) => {
 router.delete("/:phoneId", async (req, res) => {
   try {
     const id = req.params.phoneId;
+    //refactor to FindOneAndDelete
     const deletedPhone = await Smartphone.remove({
       _id: id
     })
