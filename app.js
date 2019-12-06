@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 const express = require("express")
 const app = express()
 const morgan = require("morgan")
@@ -9,6 +10,7 @@ const logger = require('./api/middlewares/logger')
 const smartphonesRoutes = require("./api/routes/smartphones")
 const osRoutes = require("./api/routes/os")
 const vendorsRoutes = require("./api/routes/vendors")
+const logsRoutes = require("./api/routes/logs")
 
 require('./api/db/db')
 
@@ -37,6 +39,7 @@ app.use((req, res, next) => {
 app.use("/smartphones", smartphonesRoutes)
 app.use("/os", osRoutes)
 app.use("/vendors", vendorsRoutes)
+app.use("/logs", logsRoutes)
 
 
 app.use((req, res, next) => {

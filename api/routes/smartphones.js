@@ -6,7 +6,7 @@ const Smartphone = require("../models/smartphone")
 
 router.get("/", async (req, res) => {
   try {
-    const result = await Smartphone.find()
+    const result = await Smartphone.find(req.query)
     if (result.length > 0) {
       res.status(200).json(result)
     } else {
@@ -104,6 +104,19 @@ router.delete("/:phoneId", async (req, res) => {
       });
     }
   } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      error: err
+    })
+  }
+})
+
+router.get("/search", async (req, res) => {
+  try {
+    const searchResult = await Smartphone.find(req.body)
+    console.log(searchResult)
+  }
+  catch(err) {
     console.log(err);
     res.status(500).json({
       error: err
