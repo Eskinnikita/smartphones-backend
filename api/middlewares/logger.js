@@ -5,11 +5,11 @@ const logSchema = require('../models/log')
 
 const logger = async (req, res, next) => {
     try {
-        if (req.originalUrl != "/logs") {
+        if (req.originalUrl.indexOf('/logs') === -1) {
             const oldWrite = res.write
             const oldEnd = res.end
 
-            const chunks = []
+            const chunks = [] 
 
             res.write = (...restArgs) => {
                 chunks.push(Buffer.from(restArgs[0]))

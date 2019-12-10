@@ -6,7 +6,9 @@ const Smartphone = require("../models/smartphone")
 
 router.get("/", async (req, res) => {
   try {
-    const result = await Smartphone.find(req.query)
+    const result = await Smartphone.find({})
+        .populate('vendor', ['name', 'country'])
+        .populate('os', ['name'])
     if (result.length > 0) {
       res.status(200).json(result)
     } else {
@@ -21,13 +23,36 @@ router.get("/", async (req, res) => {
   }
 })
 
+// router.get("/search", async (req, res) => {
+//   try {
+//     const searchResult = await Smartphone.find({
+//
+//     })
+//     .populate('vendor', ['name', 'country']).populate('os', ['name'])
+//
+//     if(searchResult.length !== 0) {
+//       res.status(200).json(searchResult)
+//     }
+//     else {
+//       res.status(404).json('nothing found')
+//     }
+//   }
+//   catch(err) {
+//     console.log(err);
+//     res.status(500).json({
+//       error: err
+//     })
+//   }
+// })
+
+
 router.post("/", async (req, res) => {
   try {
     const phone = new Smartphone({
       _id: new mongoose.Types.ObjectId(),
-      vendor_id: req.body.vendor_id,
+      vendor: req.body.vendor_id,
       name: req.body.name,
-      os_id: req.body.os_id,
+      os: req.body.os_id,
       memory: req.body.memory,
       display_size: req.body.display_size,
       battery: req.body.battery,
@@ -46,6 +71,8 @@ router.get("/:phoneId", async (req, res) => {
   try {
     const id = req.params.phoneId;
     const phone = await Smartphone.findById(id)
+        .populate('vendor', ['name', 'country'])
+        .populate('os', ['name'])
     if (phone) {
       res.status(200).json(phone);
     } else {
@@ -111,17 +138,5 @@ router.delete("/:phoneId", async (req, res) => {
   }
 })
 
-router.get("/search", async (req, res) => {
-  try {
-    const searchResult = await Smartphone.find(req.body)
-    console.log(searchResult)
-  }
-  catch(err) {
-    console.log(err);
-    res.status(500).json({
-      error: err
-    })
-  }
-})
 
 module.exports = router;

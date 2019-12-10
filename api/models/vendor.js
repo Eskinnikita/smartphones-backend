@@ -9,4 +9,4 @@ const vendorSchema = mongoose.Schema({
     country: String
 })
 
-module.exports = mongoose.model('vendor', vendorSchema)
+module.exports = mongoose.model('Vendor', vendorSchema)

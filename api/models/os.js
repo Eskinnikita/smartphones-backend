@@ -9,4 +9,4 @@ const osSchema = mongoose.Schema({
     developers: Array
 })
 
-module.exports = mongoose.model('os', osSchema)
+module.exports = mongoose.model('Os', osSchema)
