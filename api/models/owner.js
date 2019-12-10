@@ -6,9 +6,11 @@ const ownerSchema = mongoose.Schema({
         type: Number,
         required: true
     },
-    name: String,
-    surname: String,
-    phone_id: String
+    smartphone_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'Smartphone',
+        required: true
+    }
 })
 
-module.exports = mongoose.model('owner', ownerSchema)
+module.exports = mongoose.model('Owner', ownerSchema)

@@ -11,6 +11,7 @@ const smartphonesRoutes = require("./api/routes/smartphones")
 const osRoutes = require("./api/routes/os")
 const vendorsRoutes = require("./api/routes/vendors")
 const logsRoutes = require("./api/routes/logs")
+const ownersRoutes = require("./api/routes/owners")
 
 require('./api/db/db')
 
@@ -40,6 +41,7 @@ app.use("/smartphones", smartphonesRoutes)
 app.use("/os", osRoutes)
 app.use("/vendors", vendorsRoutes)
 app.use("/logs", logsRoutes)
+app.use("/owners", ownersRoutes)
 
 
 app.use((req, res, next) => {
