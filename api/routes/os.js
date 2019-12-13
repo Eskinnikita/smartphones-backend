@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
       developers: req.body.developers
     })
     const addedOs = await os.save()
-    res.status(200).json(addedOs)
+    res.status(201).json(addedOs)
   } catch (err) {
     console.log(err)
     res.status(500).send({

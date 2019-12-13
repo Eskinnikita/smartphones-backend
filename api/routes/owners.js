@@ -58,47 +58,23 @@ router.get('/', async (req,res) => {
     catch(err){
         res.status(500).send({error: err.message})
     }
-    // try {
-    //     let reqData = {
-    //         firstName: req.query.firstName,
-    //         middleName: req.query.middleName,
-    //         lastName: req.query.lastName,
-    //         email: req.query.email
-    //     }
-    //     const person = {};
-    //     request(`http://persons.std-247.ist.mospolytech.ru/person?firstName=${reqData.firstName}&middleName=${reqData.middleName}&lastName=${reqData.lastName}&email=${reqData.email}`,
-    //         {json: true},(err, result, body) => {
-    //         if(err) {
-    //             res.status(500).json('server error')
-    //         }
-    //         else {
-    //             const person = result.body
-    //         }
-    //     })
-    //     const result = Owner.find({'owner_id': person.id})
-    //     if(result.length === 0){
-    //         request.post(`http://persons.std-247.ist.mospolytech.ru/person`, {form: reqData}, (err,httpResponse,body)=> {
-    //             if(err) {
-    //                 res.status(500).json('Error to add user in persons database')
-    //             }
-    //             else {
-    //                 const addedPersonId = JSON.parse(httpResponse.body).data.id
-    //                 const vendor = new Vendor({
-    //                     _id: new mongoose.Types.ObjectId(),
-    //                     owner_id: addedPersonId
-    //                 })
-    //             }
-    //         })
-    //         // res.status(400).json('Cant found owner in owners table')
-    //     }
-    //     else {
-    //         res.status(200).json(result)
-    //     }
-    // } catch (err) {
-    //     res.status(500).json({
-    //         error: err
-    //     })
-    // }
+})
+
+router.get('/all', async (req,res) => {
+    try {
+        const result = await Owner.find({})
+            .populate('smartphone_id', 'name')
+        if (result.length > 0) {
+            res.status(200).json(result)
+        } else {
+            res.status(404).json({
+                message: 'No entries found'
+            })
+        }
+    }
+    catch(err) {
+        res.status(500).json({error: err.message})
+    }
 })
 
 

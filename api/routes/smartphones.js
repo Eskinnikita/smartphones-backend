@@ -23,27 +23,24 @@ router.get("/", async (req, res) => {
   }
 })
 
-// router.get("/search", async (req, res) => {
-//   try {
-//     const searchResult = await Smartphone.find({
-//
-//     })
-//     .populate('vendor', ['name', 'country']).populate('os', ['name'])
-//
-//     if(searchResult.length !== 0) {
-//       res.status(200).json(searchResult)
-//     }
-//     else {
-//       res.status(404).json('nothing found')
-//     }
-//   }
-//   catch(err) {
-//     console.log(err);
-//     res.status(500).json({
-//       error: err
-//     })
-//   }
-// })
+router.get("/search", async (req, res) => {
+  try {
+    let searchResult = await Smartphone.find()
+
+    if(searchResult.length !== 0) {
+      res.status(200).json(searchResult)
+    }
+    else {
+      res.status(404).json('nothing found')
+    }
+  }
+  catch(err) {
+    console.log(err);
+    res.status(500).json({
+      error: err
+    })
+  }
+})
 
 
 router.post("/", async (req, res) => {
@@ -59,7 +56,7 @@ router.post("/", async (req, res) => {
       price: req.body.price
     })
     const savedPhone = await phone.save()
-    res.status(200).json(savedPhone)
+    res.status(201).json(savedPhone)
   } catch (err) {
     res.status(500).json({
       error: err

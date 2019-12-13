@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
       country: req.body.country
     })
     const addedVendor = await vendor.save()
-    res.status(200).json(addedVendor)
+    res.status(201).json(addedVendor)
   } catch (err) {
     console.log(err)
     res.status(500).send({
