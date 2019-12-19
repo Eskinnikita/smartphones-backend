@@ -26,6 +26,14 @@ router.get("/", async (req, res) => {
 router.get("/search", async (req, res) => {
   try {
     let searchResult = await Smartphone.find()
+        .populate({
+          path: 'vendor',
+          match: {country: req.query.country}
+        })
+        .populate({
+          path: 'os',
+          match: {name: req.query.os}
+        })
 
     if(searchResult.length !== 0) {
       res.status(200).json(searchResult)
@@ -41,7 +49,6 @@ router.get("/search", async (req, res) => {
     })
   }
 })
-
 
 router.post("/", async (req, res) => {
   try {

@@ -2,10 +2,10 @@ const express = require('express')
 const mongoose = require("mongoose")
 const request = require("request")
 const Smartphone = require("../models/smartphone")
-const router = express.Router()
 const Owner = require('../models/owner')
+const router = express.Router()
 
-router.get('/', async (req,res) => {
+router.get('/', async (req, res) => {
     try {
         const userInfo = {
             firstName: req.query.firstName,
@@ -13,57 +13,111 @@ router.get('/', async (req,res) => {
             lastName: req.query.lastName,
             email: req.query.email
         }
-        const smartphoneName = req.query.phoneName
-        const person = {}
 
-        request(`http://persons.std-247.ist.mospolytech.ru/person?firstName=${userInfo.firstName}&middleName=${userInfo.middleName}&lastName=${userInfo.lastName}&email=${userInfo.email}`,
-            {json: true}, async (err, result, body) => {
-                if (err) {
-                    res.status(500).json('server error')
-                } else {
-                    console.log('RESULT', result)
-                    if(result.body.data) {
-                        console.log('BODY DATA', result.body.data)
-                        request.post(`http://persons.std-247.ist.mospolytech.ru/person`, {form: userInfo}, async (err, httpResponse, body) => {
-                            if (err) {
-                                res.status(500).json('Cant add user in persons database')
-                            } else {
-                                const phone = await Smartphone.findOne({name: smartphoneName})
-                                const addedPersonId = JSON.parse(httpResponse.body).data.id
-                                const owner = new Owner({
-                                    _id: new mongoose.Types.ObjectId(),
-                                    owner_id: addedPersonId,
-                                    smartphone_id: phone._id
-                                })
-                                const addedOwner = await owner.save()
-                                res.status(201).json(addedOwner)
-                            }
-                        })
-                    }
-                    else {
-                        const person = body
-                        const result = await Owner.findOne({'owner_id': person.id}).populate('smartphone_id')
-                        console.log(result)
-                        const owner = {
-                            _id: result._id,
-                            owner: person,
-                            smartphone: result.smartphone_id
-                        }
-                        res.status(200).json(owner)
-                        // const foundOwner
+        const smartphoneName = req.query.phoneName
+
+        request.post(`http://persons.std-247.ist.mospolytech.ru/person`, {form: userInfo}, async (err, httpResponse, body) => {
+            if (err) {
+                res.status(500).json({error: 'Some problem with persons DB'})
+            } else {
+                const person = JSON.parse(body)
+
+                const result = await Owner.findOne({'owner_id': person.data.id})
+                const phone = await Smartphone.findOne({name: smartphoneName})
+
+                const configPerson = {}
+                for(let param in person.data) {
+                    if(person.data[param] !== null) {
+                        configPerson[param] = person.data[param]
                     }
                 }
-            })
-    }
-    catch(err){
+
+                if (result !== null) {
+                    res.status(200).json({
+                        _id: result.id,
+                        owner: configPerson,
+                        smartphone: phone
+                    })
+                } else {
+                    const addedPersonId = person.data.id
+                    const owner = new Owner({
+                        _id: new mongoose.Types.ObjectId(),
+                        owner_id: addedPersonId,
+                        smartphone_id: phone._id
+                    })
+                    const addedOwner = await owner.save()
+                    res.status(201).json({
+                        _id: addedOwner._id,
+                        owner: configPerson,
+                        smartphone: phone
+                    })
+                }
+                // res.status(200).json(JSON.parse(result))
+            }
+        })
+    } catch (err) {
         res.status(500).send({error: err.message})
     }
 })
+// router.get('/', async (req,res) => {
+//     try {
+//         const userInfo = {
+//             firstName: req.query.firstName,
+//             middleName: req.query.middleName,
+//             lastName: req.query.lastName,
+//             email: req.query.email
+//         }
+//         const smartphoneName = req.query.phoneName
+//         const person = {}
+//
+//         request(`http://persons.std-247.ist.mospolytech.ru/person?firstName=${userInfo.firstName}&middleName=${userInfo.middleName}&lastName=${userInfo.lastName}&email=${userInfo.email}`,
+//             {json: true}, async (err, result, body) => {
+//                 if (err) {
+//                     res.status(500).json('server error')
+//                 } else {
+//                     console.log('RESULT', result)
+//                     if(result.body.data) {
+//                         console.log('BODY DATA', result.body.data)
+//                         request.post(`http://persons.std-247.ist.mospolytech.ru/person`, {form: userInfo}, async (err, httpResponse, body) => {
+//                             if (err) {
+//                                 res.status(500).json('Cant add user in persons database')
+//                             } else {
+//                                 const phone = await Smartphone.findOne({name: smartphoneName})
+//                                 const addedPersonId = JSON.parse(httpResponse.body).data.id
+//                                 const owner = new Owner({
+//                                     _id: new mongoose.Types.ObjectId(),
+//                                     owner_id: addedPersonId,
+//                                     smartphone_id: phone._id
+//                                 })
+//                                 const addedOwner = await owner.save()
+//                                 res.status(201).json(addedOwner)
+//                             }
+//                         })
+//                     }
+//                     else {
+//                         const person = body
+//                         const result = await Owner.findOne({'owner_id': person.id}).populate('smartphone_id')
+//                         console.log(result)
+//                         const owner = {
+//                             _id: result._id,
+//                             owner: person,
+//                             smartphone: result.smartphone_id
+//                         }
+//                         res.status(200).json(owner)
+//                         // const foundOwner
+//                     }
+//                 }
+//             })
+//     }
+//     catch(err){
+//         res.status(500).send({error: err.message})
+//     }
+// })
 
-router.get('/all', async (req,res) => {
+router.get('/all', async (req, res) => {
     try {
         const result = await Owner.find({})
-            .populate('smartphone_id', 'name')
+        // .populate('smartphone_id', 'name')
         if (result.length > 0) {
             res.status(200).json(result)
         } else {
@@ -71,14 +125,10 @@ router.get('/all', async (req,res) => {
                 message: 'No entries found'
             })
         }
-    }
-    catch(err) {
+    } catch (err) {
         res.status(500).json({error: err.message})
     }
 })
-
-
-
 
 
 module.exports = router
